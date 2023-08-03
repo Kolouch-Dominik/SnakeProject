@@ -11,6 +11,7 @@ public class Snake : MonoBehaviour
     private float timeToMove = .2f;
     private float elapsedTime;
     private List<Transform> snakeParts;
+    private Vector3 newPartSpawnPosition;
 
     [field: SerializeField] public Transform BodyPart { get; set; }
 
@@ -31,6 +32,8 @@ public class Snake : MonoBehaviour
         {
             elapsedTime = timeToMove;
 
+            newPartSpawnPosition = snakeParts[snakeParts.Count - 1].position;
+
             for (int i = snakeParts.Count - 1; i > 0; i--)
                 snakeParts[i].position = snakeParts[i - 1].position;
 
@@ -45,29 +48,27 @@ public class Snake : MonoBehaviour
     private void AddBodyPart()
     {
         Transform bodyPart = Instantiate(BodyPart);
-        bodyPart.position = snakeParts[snakeParts.Count - 1].position;
+        bodyPart.position = newPartSpawnPosition;
 
         snakeParts.Add(bodyPart);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Food"))
-            AddBodyPart();
+        if (other.CompareTag("Food")) AddBodyPart();
         else if (other.CompareTag("Wall") || other.CompareTag("SnakeBody"))
-        {
             GameManagerScript.Instance.GameOver();
-        }
+
     }
 
     public void Turn(Directions direction)
     {
         Direction = direction switch
         {
-            Directions.Left => Direction = Vector2.left,
-            Directions.Right => Direction = Vector2.right,
-            Directions.Up => Direction = Vector2.up,
-            Directions.Down => Direction = Vector2.down,
+            Directions.Left when Direction != Vector2.right => Vector2.left,
+            Directions.Right when Direction != Vector2.left => Vector2.right,
+            Directions.Up when Direction != Vector2.down => Vector2.up,
+            Directions.Down when Direction != Vector2.up => Vector2.down,
             _ => throw new NotImplementedException(),
         };
     }

@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f4091e520510e24d9ee7aabebde4c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <BodyPart>k__BackingField: {fileID: 5213449812806620051, guid: 26e906a00dff7a442b73fbf2815180dd, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,6 +328,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8594318490111263500, guid: f6f22adeef4dedb47af2c6d08f9ab43f, type: 3}
       propertyPath: m_Name
+      value: Food
+      objectReference: {fileID: 0}
+    - target: {fileID: 8594318490111263500, guid: f6f22adeef4dedb47af2c6d08f9ab43f, type: 3}
+      propertyPath: m_TagString
       value: Food
       objectReference: {fileID: 0}
     m_RemovedComponents: []
