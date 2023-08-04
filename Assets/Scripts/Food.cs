@@ -13,7 +13,6 @@ public class Food : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        RandomizePos();
     }
     public void RandomizePos()
     {

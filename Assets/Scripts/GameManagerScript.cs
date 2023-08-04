@@ -17,17 +17,18 @@ public class GameManagerScript : MonoBehaviour
     private Vector2 endPosition;
     [field: SerializeField] public int PixelDistToDetect = 20;
 
+    [field: SerializeField]
+
     public Bounds GameArea { get; private set; }
 
     private void Awake()
     {
         Instance = this;
     }
-    void Start()
+
+    private void Start()
     {
-        GameArea = new Bounds(new Vector3(0, 0, 0), new Vector3(AreaWidth, AreaHeight));
-        GenerateWalls();
-        GenerateObstacles();
+        Restart();
     }
 
     void Update()
@@ -90,15 +91,19 @@ public class GameManagerScript : MonoBehaviour
         if (AreaHeight % 2 == 1) offsetY = .5f;
 
         GameObject leftWall = Instantiate(WallPrefab, new Vector3(left, offsetY, 0f), Quaternion.identity);
+        leftWall.GetComponent<BoxCollider2D>().size = new Vector2(.9f,1);
         leftWall.transform.localScale = new Vector3(1f, AreaHeight, 1f);
-
+        
         GameObject rightWall = Instantiate(WallPrefab, new Vector3(left + AreaWidth, offsetY, 0f), Quaternion.identity);
+        rightWall.GetComponent<BoxCollider2D>().size = new Vector2(.9f, 1);
         rightWall.transform.localScale = new Vector3(1f, AreaHeight, 1f);
 
         GameObject topWall = Instantiate(WallPrefab, new Vector3(offsetX, down + AreaHeight, 0f), Quaternion.identity);
+        topWall.GetComponent<BoxCollider2D>().size = new Vector2(1, .9f);
         topWall.transform.localScale = new Vector3(AreaWidth, 1f, 1f);
 
         GameObject bottomWall = Instantiate(WallPrefab, new Vector3(offsetX, down, 0f), Quaternion.identity);
+        bottomWall.GetComponent<BoxCollider2D>().size = new Vector2(1, .9f);
         bottomWall.transform.localScale = new Vector3(AreaWidth, 1f, 1f);
     }
 
@@ -113,17 +118,24 @@ public class GameManagerScript : MonoBehaviour
         {
             do
             {
-                randX = (int)Random.Range((GameArea.min.x) + 1, GameArea.max.x-1 );
-                randY = (int)Random.Range((GameArea.min.y) + 2, GameArea.max.y-2 );
+                randX = (int)Random.Range((GameArea.min.x) + 1, GameArea.max.x - 1);
+                randY = (int)Random.Range((GameArea.min.y) + 2, GameArea.max.y - 2);
                 randPosition = new(randX, randY, 0);
             } while (Physics2D.OverlapCircleAll(randPosition, 1f).Length != 0);
             Instantiate(WallPrefab, new Vector3(randX, randY, 0), Quaternion.identity);
         }
     }
 
-    internal void GameOver()
+    public void GameOver()
     {
         //TODO:
         Time.timeScale = 0f;
+    }
+
+    private void Restart()
+    {
+        GameArea = new Bounds(new Vector3(0, 0, 0), new Vector3(AreaWidth, AreaHeight));
+        GenerateWalls();
+        GenerateObstacles();
     }
 }
