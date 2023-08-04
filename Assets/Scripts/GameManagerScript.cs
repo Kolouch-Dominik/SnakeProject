@@ -1,16 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO.Pipes;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript Instance { get; private set; }
     public enum Directions { Right, Left, Down, Up };
     [field: SerializeField, Header("GameArea")] public GameObject WallPrefab { get; private set; }
-    // max 45x28, min 7x7
     [field: SerializeField] public int AreaWidth { get; set; }
     [field: SerializeField] public int AreaHeight { get; set; }
 
@@ -30,8 +26,8 @@ public class GameManagerScript : MonoBehaviour
     void Start()
     {
         GameArea = new Bounds(new Vector3(0, 0, 0), new Vector3(AreaWidth, AreaHeight));
-        Debug.Log(GameArea);
         GenerateWalls();
+        GenerateObstacles();
     }
 
     void Update()
@@ -104,6 +100,25 @@ public class GameManagerScript : MonoBehaviour
 
         GameObject bottomWall = Instantiate(WallPrefab, new Vector3(offsetX, down, 0f), Quaternion.identity);
         bottomWall.transform.localScale = new Vector3(AreaWidth, 1f, 1f);
+    }
+
+    private void GenerateObstacles()
+    {
+
+        int count = (AreaWidth - 2) * (AreaHeight - 2) / 20;
+        int randX, randY;
+        Vector3 randPosition;
+
+        for (int i = 0; i < count; i++)
+        {
+            do
+            {
+                randX = (int)Random.Range((GameArea.min.x) + 1, GameArea.max.x-1 );
+                randY = (int)Random.Range((GameArea.min.y) + 2, GameArea.max.y-2 );
+                randPosition = new(randX, randY, 0);
+            } while (Physics2D.OverlapCircleAll(randPosition, 1f).Length != 0);
+            Instantiate(WallPrefab, new Vector3(randX, randY, 0), Quaternion.identity);
+        }
     }
 
     internal void GameOver()

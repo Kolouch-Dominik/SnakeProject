@@ -8,7 +8,7 @@ using static GameManagerScript;
 public class Snake : MonoBehaviour
 {
     private Vector2 Direction { get; set; }
-    private float timeToMove = .2f;
+    private float timeToMove = 1f;
     private float elapsedTime;
     private List<Transform> snakeParts;
     private Vector3 newPartSpawnPosition;
@@ -38,8 +38,8 @@ public class Snake : MonoBehaviour
                 snakeParts[i].position = snakeParts[i - 1].position;
 
             transform.position = new Vector3(
-                transform.position.x + Direction.x,
-                transform.position.y + Direction.y,
+                MathF.Round(transform.position.x + Direction.x),
+                MathF.Round(transform.position.y + Direction.y),
                 0
             );
         }
