@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -78,11 +79,6 @@ public class GameManagerScript : MonoBehaviour
 
     private void GenerateWalls()
     {
-        if (AreaWidth > 45) AreaWidth = 45;
-        else if (AreaWidth < 7) AreaWidth = 7;
-        if (AreaHeight > 28) AreaHeight = 28;
-        else if (AreaHeight < 7) AreaHeight = 7;
-
         var left = -AreaWidth / 2;
         var down = -AreaHeight / 2;
 
@@ -91,9 +87,9 @@ public class GameManagerScript : MonoBehaviour
         if (AreaHeight % 2 == 1) offsetY = .5f;
 
         GameObject leftWall = Instantiate(WallPrefab, new Vector3(left, offsetY, 0f), Quaternion.identity);
-        leftWall.GetComponent<BoxCollider2D>().size = new Vector2(.9f,1);
+        leftWall.GetComponent<BoxCollider2D>().size = new Vector2(.9f, 1);
         leftWall.transform.localScale = new Vector3(1f, AreaHeight, 1f);
-        
+
         GameObject rightWall = Instantiate(WallPrefab, new Vector3(left + AreaWidth, offsetY, 0f), Quaternion.identity);
         rightWall.GetComponent<BoxCollider2D>().size = new Vector2(.9f, 1);
         rightWall.transform.localScale = new Vector3(1f, AreaHeight, 1f);
@@ -118,8 +114,8 @@ public class GameManagerScript : MonoBehaviour
         {
             do
             {
-                randX = (int)Random.Range((GameArea.min.x) + 1, GameArea.max.x - 1);
-                randY = (int)Random.Range((GameArea.min.y) + 2, GameArea.max.y - 2);
+                randX = (int)Random.Range(GameArea.min.x + 1.5f, GameArea.max.x - 1.5f);
+                randY = (int)Random.Range(GameArea.min.y + 1.5f, GameArea.max.y - 1.5f);
                 randPosition = new(randX, randY, 0);
             } while (Physics2D.OverlapCircleAll(randPosition, 1f).Length != 0);
             Instantiate(WallPrefab, new Vector3(randX, randY, 0), Quaternion.identity);
@@ -134,8 +130,22 @@ public class GameManagerScript : MonoBehaviour
 
     private void Restart()
     {
+        if (GameData.Instance != null)
+        {
+            AreaWidth = GameData.Instance.AreaWidth;
+            AreaHeight = GameData.Instance.AreaHeight;
+        }
+        CheckArea();
         GameArea = new Bounds(new Vector3(0, 0, 0), new Vector3(AreaWidth, AreaHeight));
         GenerateWalls();
         GenerateObstacles();
+        Destroy(GameData.Instance);
+    }
+    private void CheckArea()
+    {
+        if (AreaWidth > 45) AreaWidth = 45;
+        else if (AreaWidth < 7) AreaWidth = 7;
+        if (AreaHeight > 28) AreaHeight = 28;
+        else if (AreaHeight < 7) AreaHeight = 7;
     }
 }
