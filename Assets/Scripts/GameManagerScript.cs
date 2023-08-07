@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class GameManagerScript : MonoBehaviour
@@ -16,9 +17,10 @@ public class GameManagerScript : MonoBehaviour
     [field: SerializeField, Header("Controlls")] public Snake snake;
     private Vector2 startPosition;
     private Vector2 endPosition;
+    private bool isGameOver = false;
     [field: SerializeField] public int PixelDistToDetect = 20;
 
-    [field: SerializeField]
+    [field: SerializeField, Header("UI")] public GameObject GameOverPanel { get; set; }
 
     public Bounds GameArea { get; private set; }
 
@@ -29,6 +31,7 @@ public class GameManagerScript : MonoBehaviour
 
     private void Start()
     {
+        isGameOver = false;
         Restart();
     }
 
@@ -36,6 +39,11 @@ public class GameManagerScript : MonoBehaviour
     {
         if (Input.touchCount > 0)
         {
+            if (isGameOver)
+            {
+                SceneManager.LoadScene("MenuScene");
+            }
+
             Touch touch = Input.GetTouch(0);
 
             if (touch.phase == TouchPhase.Began)
@@ -114,8 +122,9 @@ public class GameManagerScript : MonoBehaviour
         {
             do
             {
-                randX = (int)Random.Range(GameArea.min.x + 1.5f, GameArea.max.x - 1.5f);
-                randY = (int)Random.Range(GameArea.min.y + 1.5f, GameArea.max.y - 1.5f);
+                randX = (int)Random.Range(GameArea.min.x + 2f, GameArea.max.x - 1f);
+                randY = (int)Random.Range(GameArea.min.y + 2f, GameArea.max.y - 1f);
+
                 randPosition = new(randX, randY, 0);
             } while (Physics2D.OverlapCircleAll(randPosition, 1f).Length != 0);
             Instantiate(WallPrefab, new Vector3(randX, randY, 0), Quaternion.identity);
@@ -124,8 +133,8 @@ public class GameManagerScript : MonoBehaviour
 
     public void GameOver()
     {
-        //TODO:
-        Time.timeScale = 0f;
+        GameOverPanel.SetActive(true);
+        isGameOver= true;
     }
 
     private void Restart()
@@ -135,17 +144,10 @@ public class GameManagerScript : MonoBehaviour
             AreaWidth = GameData.Instance.AreaWidth;
             AreaHeight = GameData.Instance.AreaHeight;
         }
-        CheckArea();
         GameArea = new Bounds(new Vector3(0, 0, 0), new Vector3(AreaWidth, AreaHeight));
         GenerateWalls();
         GenerateObstacles();
-        Destroy(GameData.Instance);
+        Destroy(GameObject.Find("GameData"));
     }
-    private void CheckArea()
-    {
-        if (AreaWidth > 45) AreaWidth = 45;
-        else if (AreaWidth < 7) AreaWidth = 7;
-        if (AreaHeight > 28) AreaHeight = 28;
-        else if (AreaHeight < 7) AreaHeight = 7;
-    }
+    
 }

@@ -13,10 +13,12 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         int width = 0, height = 0;
-        int.TryParse(LevelWidhtInput.text, out width);
-        int.TryParse(LevelHeightInput.text, out height);
-        GameData.Instance.AreaWidth= width;
-        GameData.Instance.AreaHeight= height;
+        width = int.Parse(LevelWidhtInput.text);
+        height = int.Parse(LevelHeightInput.text);
+        if (width < 7) width = 7;
+        if (height < 7) height = 7;
+        GameData.Instance.AreaWidth = width;
+        GameData.Instance.AreaHeight = height;
         SceneManager.LoadScene(LevelToLoad);
     }
 }
