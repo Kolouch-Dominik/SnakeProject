@@ -15,6 +15,11 @@ public class Snake : MonoBehaviour
 
     [field: SerializeField] public Transform BodyPart { get; set; }
 
+    private void Awake()
+    {
+        timeToMove = 1.1f - (GameData.Instance.GameSpeed / 10);
+    }
+
     private void Start()
     {
         Direction = Vector2.right;

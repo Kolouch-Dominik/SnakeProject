@@ -387,8 +387,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <WallPrefab>k__BackingField: {fileID: 3281846328607307549, guid: af87bda5a6c948b448452b2a5ed07179, type: 3}
-  <AreaWidth>k__BackingField: 30
-  <AreaHeight>k__BackingField: 30
+  <AreaWidth>k__BackingField: 10
+  <AreaHeight>k__BackingField: 10
   <FoodPrefab>k__BackingField: {fileID: 8594318490111263500, guid: f6f22adeef4dedb47af2c6d08f9ab43f, type: 3}
   snake: {fileID: 0}
   PixelDistToDetect: 20

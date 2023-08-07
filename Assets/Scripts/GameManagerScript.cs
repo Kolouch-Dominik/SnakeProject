@@ -135,6 +135,7 @@ public class GameManagerScript : MonoBehaviour
     {
         GameOverPanel.SetActive(true);
         isGameOver= true;
+        Destroy(GameObject.Find("GameData"));
     }
 
     private void Restart()
@@ -147,7 +148,6 @@ public class GameManagerScript : MonoBehaviour
         GameArea = new Bounds(new Vector3(0, 0, 0), new Vector3(AreaWidth, AreaHeight));
         GenerateWalls();
         GenerateObstacles();
-        Destroy(GameObject.Find("GameData"));
     }
     
 }
