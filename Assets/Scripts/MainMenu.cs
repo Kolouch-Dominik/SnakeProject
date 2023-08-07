@@ -14,8 +14,9 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         int width = 0, height = 0;
-        width = int.Parse(LevelWidhtInput.text);
-        height = int.Parse(LevelHeightInput.text);
+        if (!int.TryParse(LevelWidhtInput.text, out width) || !int.TryParse(LevelHeightInput.text, out height))
+            return;
+         
         if (width < 7) width = 7;
         if (height < 7) height = 7;
         GameData.Instance.AreaWidth = width;

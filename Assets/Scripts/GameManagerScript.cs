@@ -94,21 +94,11 @@ public class GameManagerScript : MonoBehaviour
         if (AreaWidth % 2 == 1) offsetX = .5f;
         if (AreaHeight % 2 == 1) offsetY = .5f;
 
-        GameObject leftWall = Instantiate(WallPrefab, new Vector3(left, offsetY, 0f), Quaternion.identity);
-        leftWall.GetComponent<BoxCollider2D>().size = new Vector2(.9f, 1);
-        leftWall.transform.localScale = new Vector3(1f, AreaHeight, 1f);
 
-        GameObject rightWall = Instantiate(WallPrefab, new Vector3(left + AreaWidth, offsetY, 0f), Quaternion.identity);
-        rightWall.GetComponent<BoxCollider2D>().size = new Vector2(.9f, 1);
-        rightWall.transform.localScale = new Vector3(1f, AreaHeight, 1f);
-
-        GameObject topWall = Instantiate(WallPrefab, new Vector3(offsetX, down + AreaHeight, 0f), Quaternion.identity);
-        topWall.GetComponent<BoxCollider2D>().size = new Vector2(1, .9f);
-        topWall.transform.localScale = new Vector3(AreaWidth, 1f, 1f);
-
-        GameObject bottomWall = Instantiate(WallPrefab, new Vector3(offsetX, down, 0f), Quaternion.identity);
-        bottomWall.GetComponent<BoxCollider2D>().size = new Vector2(1, .9f);
-        bottomWall.transform.localScale = new Vector3(AreaWidth, 1f, 1f);
+        CreateWall(new Vector3(left, offsetY, 0f), new Vector3(1f, AreaHeight, 1f), new Vector2(.9f, 1));
+        CreateWall(new Vector3(left + AreaWidth, offsetY, 0f), new Vector3(1f, AreaHeight, 1f), new Vector2(.9f, 1));
+        CreateWall(new Vector3(offsetX, down + AreaHeight, 0f), new Vector3(AreaWidth, 1f, 1f), new Vector2(1, .9f));
+        CreateWall(new Vector3(offsetX, down, 0f), new Vector3(AreaWidth, 1f, 1f), new Vector2(1, .9f));
     }
 
     private void GenerateObstacles()
@@ -127,14 +117,14 @@ public class GameManagerScript : MonoBehaviour
 
                 randPosition = new(randX, randY, 0);
             } while (Physics2D.OverlapCircleAll(randPosition, 1f).Length != 0);
-            Instantiate(WallPrefab, new Vector3(randX, randY, 0), Quaternion.identity);
+            CreateWall(randPosition, Vector3.one, new Vector2(0.9f, 0.9f));
         }
     }
 
     public void GameOver()
     {
         GameOverPanel.SetActive(true);
-        isGameOver= true;
+        isGameOver = true;
         Destroy(GameObject.Find("GameData"));
     }
 
@@ -149,5 +139,12 @@ public class GameManagerScript : MonoBehaviour
         GenerateWalls();
         GenerateObstacles();
     }
-    
+
+    private void CreateWall(Vector3 position, Vector3 scale, Vector2 colliderSize)
+    {
+        GameObject Wall = Instantiate(WallPrefab, position, Quaternion.identity);
+        Wall.GetComponent<BoxCollider2D>().size = colliderSize;
+        Wall.transform.localScale = scale;
+    }
+
 }
