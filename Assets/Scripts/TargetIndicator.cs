@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class TargetIndicator : MonoBehaviour
 {
-    [field: SerializeField] public Food Target;
-    [field: SerializeField] public float HideDistance { get; private set; }
+    [field: SerializeField] private Food target;
+    [field: SerializeField] private float hideDistance;
 
     private void Update()
     {
-        var dir = Target.transform.position - transform.position;
+        Vector3 dir = target.transform.position - transform.position;
 
-        if (dir.magnitude < HideDistance)
+        if (dir.magnitude < hideDistance)
         {
             SetIndicatorActive(false);
         }
         else
         {
             SetIndicatorActive(true);
-            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }

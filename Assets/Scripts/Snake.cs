@@ -1,23 +1,21 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using static GameManagerScript;
 
 public class Snake : MonoBehaviour
 {
+    [field: SerializeField] private Transform bodyPart;
     private Vector2 Direction { get; set; }
     private float timeToMove = 1f;
     private float elapsedTime;
     private List<Transform> snakeParts;
     private Vector3 newPartSpawnPosition;
 
-    [field: SerializeField] public Transform BodyPart { get; set; }
-
     private void Awake()
     {
-        timeToMove = 1.1f - (GameData.Instance.GameSpeed / 10);
+        float gameSpeedSecValue = GameData.Instance.GameSpeed / 10;
+        timeToMove = 1.1f - gameSpeedSecValue;
     }
 
     private void Start()
@@ -40,7 +38,9 @@ public class Snake : MonoBehaviour
             newPartSpawnPosition = snakeParts[snakeParts.Count - 1].position;
 
             for (int i = snakeParts.Count - 1; i > 0; i--)
+            {
                 snakeParts[i].position = snakeParts[i - 1].position;
+            }
 
             transform.position = new Vector3(
                 MathF.Round(transform.position.x + Direction.x),
@@ -49,23 +49,6 @@ public class Snake : MonoBehaviour
             );
         }
     }
-
-    private void AddBodyPart()
-    {
-        Transform bodyPart = Instantiate(BodyPart);
-        bodyPart.position = newPartSpawnPosition;
-
-        snakeParts.Add(bodyPart);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Food")) AddBodyPart();
-        else if (other.CompareTag("Wall") || other.CompareTag("SnakeBody"))
-            GameManagerScript.Instance.GameOver();
-
-    }
-
     public void Turn(Directions direction)
     {
         Direction = direction switch
@@ -77,4 +60,27 @@ public class Snake : MonoBehaviour
             _ => throw new NotImplementedException(),
         };
     }
+
+    private void AddBodyPart()
+    {
+        Transform newBodyPart = Instantiate(bodyPart);
+        newBodyPart.position = newPartSpawnPosition;
+
+        snakeParts.Add(newBodyPart);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Food"))
+        {
+            AddBodyPart();
+        }
+        else if (other.CompareTag("Wall") || other.CompareTag("SnakeBody"))
+        {
+            GameManagerScript.Instance.GameOver();
+        }
+
+    }
+
+
 }

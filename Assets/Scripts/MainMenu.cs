@@ -1,27 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    [field: SerializeField] public string LevelToLoad { get; set; }
-    [field: SerializeField] public InputField LevelWidhtInput { get; set; }
-    [field: SerializeField] public InputField LevelHeightInput { get; set; }
-    [field: SerializeField] public Slider GameSpeedSlider { get; set; }
+    [field: SerializeField] private string levelToLoad;
+    [field: SerializeField] private InputField levelWidhtInput;
+    [field: SerializeField] private InputField levelHeightInput;
+    [field: SerializeField] private Slider gameSpeedSlider;
+    [field: SerializeField] private Toggle obstaclesCheckBox;
 
     public void StartGame()
     {
         int width = 0, height = 0;
-        if (!int.TryParse(LevelWidhtInput.text, out width) || !int.TryParse(LevelHeightInput.text, out height))
+        if (!int.TryParse(levelWidhtInput.text, out width) || !int.TryParse(levelHeightInput.text, out height))
+        {
             return;
-         
-        if (width < 7) width = 7;
-        if (height < 7) height = 7;
+        }
+        if (width < 7)
+        {
+            width = 7;
+        }
+        if (height < 7)
+        {
+            height = 7;
+        }
         GameData.Instance.AreaWidth = width;
         GameData.Instance.AreaHeight = height;
-        GameData.Instance.GameSpeed = GameSpeedSlider.value;
-        SceneManager.LoadScene(LevelToLoad);
+        GameData.Instance.GameSpeed = gameSpeedSlider.value;
+        GameData.Instance.GenerateObstacles = obstaclesCheckBox.isOn;
+        SceneManager.LoadScene(levelToLoad);
     }
 }

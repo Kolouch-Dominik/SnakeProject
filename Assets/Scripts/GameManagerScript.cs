@@ -1,26 +1,23 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class GameManagerScript : MonoBehaviour
 {
-    public static GameManagerScript Instance { get; private set; }
-    public enum Directions { Right, Left, Down, Up };
-    [field: SerializeField, Header("GameArea")] public GameObject WallPrefab { get; private set; }
     [field: SerializeField] public int AreaWidth { get; set; }
     [field: SerializeField] public int AreaHeight { get; set; }
-
-    [field: SerializeField, Header("Food")] public GameObject FoodPrefab { get; private set; }
-
-    [field: SerializeField, Header("Controlls")] public Snake snake;
+    [field: SerializeField] private GameObject WallPrefab;
+    [field: SerializeField] private int pixelDistToDetect = 20;
+    [field: SerializeField] private GameObject gameOverPanel;
+    [field: SerializeField] private GameObject foodPrefab;
+    [field: SerializeField] private Snake snake;
+    public static GameManagerScript Instance { get; private set; }
+    public enum Directions { Right, Left, Down, Up };
     private Vector2 startPosition;
     private Vector2 endPosition;
     private bool isGameOver = false;
-    [field: SerializeField] public int PixelDistToDetect = 20;
 
-    [field: SerializeField, Header("UI")] public GameObject GameOverPanel { get; set; }
+
 
     public Bounds GameArea { get; private set; }
 
@@ -64,7 +61,7 @@ public class GameManagerScript : MonoBehaviour
     {
         float swipeDist = (endPosition - startPosition).magnitude;
 
-        if (swipeDist < PixelDistToDetect)
+        if (swipeDist < pixelDistToDetect)
             return;
 
         Vector2 swipeDir = (endPosition - startPosition).normalized;
@@ -84,11 +81,16 @@ public class GameManagerScript : MonoBehaviour
             else snake.Turn(Directions.Down);
         }
     }
-
+    public void GameOver()
+    {
+        gameOverPanel.SetActive(true);
+        isGameOver = true;
+        Destroy(GameObject.Find("GameData"));
+    }
     private void GenerateWalls()
     {
-        var left = -AreaWidth / 2;
-        var down = -AreaHeight / 2;
+        int left = -AreaWidth / 2;
+        int down = -AreaHeight / 2;
 
         float offsetX = 0, offsetY = 0;
         if (AreaWidth % 2 == 1) offsetX = .5f;
@@ -100,7 +102,6 @@ public class GameManagerScript : MonoBehaviour
         CreateWall(new Vector3(offsetX, down + AreaHeight, 0f), new Vector3(AreaWidth, 1f, 1f), new Vector2(1, .9f));
         CreateWall(new Vector3(offsetX, down, 0f), new Vector3(AreaWidth, 1f, 1f), new Vector2(1, .9f));
     }
-
     private void GenerateObstacles()
     {
 
@@ -120,14 +121,6 @@ public class GameManagerScript : MonoBehaviour
             CreateWall(randPosition, Vector3.one, new Vector2(0.9f, 0.9f));
         }
     }
-
-    public void GameOver()
-    {
-        GameOverPanel.SetActive(true);
-        isGameOver = true;
-        Destroy(GameObject.Find("GameData"));
-    }
-
     private void Restart()
     {
         if (GameData.Instance != null)
@@ -137,7 +130,10 @@ public class GameManagerScript : MonoBehaviour
         }
         GameArea = new Bounds(new Vector3(0, 0, 0), new Vector3(AreaWidth, AreaHeight));
         GenerateWalls();
-        GenerateObstacles();
+        if (GameData.Instance.GenerateObstacles)
+        {
+            GenerateObstacles();
+        }
     }
 
     private void CreateWall(Vector3 position, Vector3 scale, Vector2 colliderSize)

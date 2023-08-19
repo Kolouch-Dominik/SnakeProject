@@ -1,22 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Food : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         RandomizePos();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
     public void RandomizePos()
     {
-        var Bound = GameManagerScript.Instance.GameArea;
+        Bounds Bound = GameManagerScript.Instance.GameArea;
         int randX, randY;
         do
         {
@@ -27,6 +20,9 @@ public class Food : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player")) RandomizePos();
+        if (other.CompareTag("Player"))
+        {
+            RandomizePos();
+        }
     }
 }

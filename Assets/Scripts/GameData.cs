@@ -7,6 +7,7 @@ public class GameData : MonoBehaviour
     public int AreaWidth { get; set; }
     public int AreaHeight { get; set; }
     public float GameSpeed { get; set; } 
+    public bool GenerateObstacles { get; set; } 
     private void Awake()
     {
         Instance= this;
